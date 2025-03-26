@@ -1,11 +1,11 @@
 import './App.css'
+import { PingComponent } from './components/atoms/PingComponent.jsx'
 
 function App() {
   return (
-  <>
-    Hello New Project
-  </>
+    <PingComponent />
   )
+  
 }
 
 export default App
