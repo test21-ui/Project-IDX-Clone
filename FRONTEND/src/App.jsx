@@ -1,9 +1,12 @@
+import { Routes, Route } from 'react-router-dom'
+import { CreateProject } from './pages/createProject.jsx'
 import './App.css'
-import { PingComponent } from './components/atoms/PingComponent.jsx'
 
 function App() {
   return (
-    <PingComponent />
+    <Routes>
+      <Route path="/" element={<CreateProject />} />
+    </Routes>
   )
   
 }
