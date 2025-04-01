@@ -10,8 +10,8 @@ export const ProjectPlayground = () => {
             <h1>Project Playground</h1>
             <p>Project ID: {projectId}</p>
             <p>Welcome to the Project Playground!</p>
-            <EditorButton isActive={true}/>
             <EditorButton isActive={false}/>
+            <EditorButton isActive={true}/>
             <EditorComponent projectId={projectId} />
         </>
     )
