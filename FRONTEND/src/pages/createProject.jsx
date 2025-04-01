@@ -1,5 +1,6 @@
 import { Button, Layout } from "antd";
 import { useCreateProject } from "../hooks/apis/mutations/useCreateProject"
+import { useNavigate } from "react-router-dom";
 
 const layoutStyle = {
     borderRadius: 8,
@@ -34,6 +35,8 @@ const contentStyle = {
   };  
 export const CreateProject = () => {
 
+    const navigate = useNavigate();
+
     const { Header, Footer, Content } = Layout;
 
     const {createProject,isPending} = useCreateProject();
@@ -41,8 +44,9 @@ export const CreateProject = () => {
     async function handleCreateProject(){
         console.log('Creating project...')
         try{
-            await createProject();
+            const response = await createProject();
             console.log('Project created! Now we should redirect to editor');
+            navigate(`/projects/${response.projectid}`);
         } catch(error){
             console.error('Error creating project:', error)
             alert('Error creating project. Please try again later.')  // Replace with your preferred error handling method.
