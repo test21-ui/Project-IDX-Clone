@@ -46,7 +46,7 @@ export const CreateProject = () => {
         try{
             const response = await createProject();
             console.log('Project created! Now we should redirect to editor');
-            navigate(`/projects/${response.projectid}`);
+            navigate(`/projects/${response.data}`);
         } catch(error){
             console.error('Error creating project:', error)
             alert('Error creating project. Please try again later.')  // Replace with your preferred error handling method.
