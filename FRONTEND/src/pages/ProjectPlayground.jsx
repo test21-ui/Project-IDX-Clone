@@ -12,19 +12,32 @@ export const ProjectPlayground = () => {
     const {projectId, setProjectId} = useTreeStructureStorage();
 
     useEffect(() => {
-        setProjectId(projectId)
-    },[])
+        setProjectId(projectIdFromUrl)
+    },[setProjectId, projectIdFromUrl]);
 
 
     return (
         <>
-            <h1>Project Playground</h1>
-            <p>Project ID: {projectIdFromUrl}</p>
-            <p>Welcome to the Project Playground!</p>
-            {projectId && <TreeStructure />}
-            <EditorButton isActive={false}/>
-            <EditorButton isActive={true}/>
-            <EditorComponent projectId={projectId} />
+            <div style={{display:"flex"}} >
+            {projectId && (
+                <div 
+                    style={{
+                        backgroundColor: "#30495f",
+                        minWidth: "250px",
+                        paddingTop: "0.3vg",
+                        maxWidth: "25%",
+                        height: "99.7vh",
+                        overflow: "auto",
+                        paddingRight: "10px"
+                    }}
+                >
+                    <TreeStructure />
+                </div>
+            )}
+            <EditorComponent />
+            </div>    
+            <EditorButton isActive="false"/>
+            <EditorButton isActive=""/>
         </>
     )
 
