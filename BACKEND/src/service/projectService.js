@@ -7,15 +7,15 @@ import directoryTree from 'directory-tree';
 
 export const createProjectService = async () => {
     // Create a unique id and then inside the Projects folder create a new folder with that id
-    const projectid = uuid4();
-    console.log("New project created with id: ", projectid);
+    const projectId = uuid4();
+    console.log("New project created with id: ", projectId);
 
-    await fs.mkdir(`Projects/${projectid}`);
+    await fs.mkdir(`Projects/${projectId}`);
 
     // After this call the npm create vite command inside the newly created project folder
 
     const response = await execPromisified(REACT_PROJECT_COMMAND,{
-        cwd: `Projects/${projectid}`
+        cwd: `Projects/${projectId}`
     });
 
     return projectId;
