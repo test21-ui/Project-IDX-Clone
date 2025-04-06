@@ -1,29 +1,35 @@
 import { Editor } from "@monaco-editor/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useEditorSocketStore } from "../../../store/editorSocketStore";
 import { useActiveFileTabStore } from "../../../store/activeFileTabStore";
 
 export const EditorComponent = () => {
     const { editorSocket } = useEditorSocketStore();
-    const { activeFileTab, setActiveFileTab } = useActiveFileTabStore();
+    const { activeFileTab } = useActiveFileTabStore();
 
     const [editorState, setEditorState] = useState({
         theme: null
     });
 
-    // Download and apply the custom theme
-    async function downloadTheme() {
-        try {
-            const response = await fetch('/NightOwl.json');
-            const data = await response.json();
-            console.log("Theme data:", data);
-            setEditorState((prev) => ({ ...prev, theme: data }));
-        } catch (error) {
-            console.error("Failed to load theme:", error);
-        }
-    }
+    const timerIdRef = useRef(null);  // useRef to persist timer between renders
 
-    // Apply the theme after editor is mounted
+    // Load and apply the custom theme once on mount
+    useEffect(() => {
+        async function downloadTheme() {
+            try {
+                const response = await fetch('/NightOwl.json');
+                const data = await response.json();
+                console.log("Theme data:", data);
+                setEditorState((prev) => ({ ...prev, theme: data }));
+            } catch (error) {
+                console.error("Failed to load theme:", error);
+            }
+        }
+
+        downloadTheme();
+    }, []);
+
+    // Apply theme when editor is mounted
     function handleEditorTheme(editor, monaco) {
         if (editorState.theme) {
             monaco.editor.defineTheme('nightowl', editorState.theme);
@@ -31,26 +37,22 @@ export const EditorComponent = () => {
         }
     }
 
-    // Socket listener for file read
-    useEffect(() => {
-        if (!editorSocket) return;
+    // Handle editor changes with debounced socket emit
+    function handleChange(value) {
+        if (timerIdRef.current !== null) {
+            clearTimeout(timerIdRef.current);
+        }
 
-        const handleReadFileSuccess = (data) => {
-            console.log("Read File success:", data);
-            setActiveFileTab(data.path, data.value);
-        };
+        timerIdRef.current = setTimeout(() => {
+            if (!editorSocket || !activeFileTab?.path) return;
 
-        editorSocket.on("readFileSuccess", handleReadFileSuccess);
-
-        return () => {
-            editorSocket.off("readFileSuccess", handleReadFileSuccess);
-        };
-    }, [editorSocket, setActiveFileTab]);
-
-    // Load the theme once on mount
-    useEffect(() => {
-        downloadTheme();
-    }, []);
+            console.log("Sending writeFile event");
+            editorSocket.emit("writeFile", {
+                pathToFileOrFolder: activeFileTab.path,
+                data: value
+            });
+        }, 2000);
+    }
 
     return (
         <>
@@ -71,6 +73,7 @@ export const EditorComponent = () => {
                         scrollBeyondLastLine: false,
                         automaticLayout: true,
                     }}
+                    onChange={handleChange}
                     value={activeFileTab?.value || '//'}
                 />
             )}
