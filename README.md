@@ -1,81 +1,111 @@
 ![image](https://github.com/user-attachments/assets/cb09a890-77e6-4a1b-85ae-75ffb6401020)
-# Code . | Cloud Development Environment
+# ⚡ Full Stack Socket App with Web Terminal
 
-### 🗓️ Project Duration
-**31 March – 10 April 2023**
+This is a full-stack real-time application that includes:
 
-### 🌐 Overview
-**Code .** is a lightweight yet powerful **cloud-based IDE** developed to emulate a real-time development environment in the browser. Designed with performance and modularity in mind, this full-stack solution integrates code editing, terminal interaction, and containerized workspaces — perfect for cloud dev and education platforms.
-
----
-
-### 🚀 Features
-
-- ⚛️ **Frontend** built using **React.js** and **Monaco Editor** for a VS Code–like editing experience  
-- 🖥️ **Real-time terminal emulation** using **xterm.js** and **WebSocket protocol**  
-- 🐳 **Containerized execution environments** using **Docker**, offering isolated and secure coding sandboxes  
-- 📦 **Multi-container orchestration** powered by **Docker Compose**, enhancing system modularity and fault isolation  
-- ⚡ **Optimized Docker images** with **multi-stage builds** and **layer caching**, ensuring fast boot times and minimal resource usage  
-- 📡 **Live Preview** with HMR (Hot Module Replacement) to instantly reflect changes made in code  
+- A **React frontend** (`FRONTEND/`)
+- A **Node.js backend** with socket support (`BACKEND/`)
+- A **WebSocket-powered terminal backend**, containerized using Docker
 
 ---
 
-### 🧩 Tech Stack
-
-| Layer         | Tools/Tech                           |
-|---------------|--------------------------------------|
-| Frontend      | React.js, Vite, Monaco Editor        |
-| Terminal      | xterm.js, WebSocket API              |
-| Backend       | Node.js, Express                     |
-| Containerization | Docker, Docker Compose             |
-| Others        | ESLint, HMR, JSX, Vite Dev Server    |
-
----
-
-### 📸 Preview
-
-![Live Demo Screenshot](./image.png)  
-_Example of Vite + React dev environment running with Hot Module Replacement (HMR)._
-
----
-
-### 🛠️ How to Run Locally
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/your-username/code-dot-ide.git
-cd code-dot-ide
-
-# 2. Start Docker containers
-docker-compose up --build
-
-# 3. Access the development environment
-# Visit http://localhost:5173 for the editor
-# Terminal runs via WebSocket in browser
-```
-
----
-
-### 📁 Project Structure (simplified)
+## 📁 Project Structure
 
 ```
 .
-├── src/
-│   ├── App.jsx
-│   ├── index.css
-│   ├── main.jsx
-│   └── assets/
-├── public/
-├── Dockerfile
-├── docker-compose.yml
-├── package.json
-└── README.md
+├── FRONTEND/         # React app (frontend)
+├── BACKEND/          # Node.js backend (sockets)
+├── Dockerfile        # Dockerfile for terminal backend (inside BACKEND)
+├── README.md
 ```
 
 ---
 
-### 📌 Key Takeaways
+## 🚀 Getting Started
 
-- Implemented secure, multi-user coding sandboxes inside browser
-- Achieved modular service orchestration with Docker Compose
-- Provided a near-native IDE experience using web technologies
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name
+```
+
+---
+
+### 2. Setup FRONTEND
+
+```bash
+cd FRONTEND
+npm install
+npm run dev
+```
+
+The frontend will run at `http://localhost:5173` or similar (based on Vite config).
+
+---
+
+### 3. Setup BACKEND (Socket Server)
+
+```bash
+cd ../BACKEND
+npm install
+npm run dev
+```
+
+Backend server will typically run at `http://localhost:3000` (check your code to confirm).
+
+---
+
+### 4. Run Terminal WebSocket Backend (Standalone)
+
+This backend powers the terminal using WebSockets.
+
+```bash
+cd BACKEND
+node src/terminalApp.js
+```
+
+---
+
+### 5. 🐳 Run Docker-based Terminal (Optional)
+
+Make sure [Docker Desktop](https://www.docker.com/products/docker-desktop/) is running.
+
+#### 🛠️ Build the Image (only once)
+
+```bash
+docker build -t sandbox .
+```
+
+#### ▶️ Run the Container
+
+```bash
+docker run -it sandbox
+```
+
+This opens an interactive shell inside the container — you can link this to your terminal frontend.
+
+---
+
+## 🧠 Notes
+
+- Ensure **all three parts** (frontend, backend, and terminal backend) are running concurrently for full functionality.
+- If using ports other than default (e.g., 3000, 5173), update configurations accordingly.
+
+---
+
+## ✅ Prerequisites
+
+- Node.js + npm
+- Docker Desktop (for terminal backend)
+- Git
+
+---
+
+## 👨‍💻 Author
+
+**Sankalp Ghansham Meshram**  
+B.Tech CSE, VNIT Nagpur  
+📧 sankalpmeshram2003@gmail.com  
+🌐 [GitHub](https://github.com) • [LinkedIn](https://linkedin.com)
+
