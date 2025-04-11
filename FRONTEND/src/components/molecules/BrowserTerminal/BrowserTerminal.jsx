@@ -1,33 +1,35 @@
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
-import '@xterm/xterm/css/xterm.css';
+import "@xterm/xterm/css/xterm.css"; // required styles
 import { useEffect, useRef } from 'react';
-import { io } from 'socket.io-client';
-import { useParams } from 'react-router-dom';
+import { AttachAddon } from '@xterm/addon-attach';
+import { useTerminalSocketStore } from '../../../store/terminalSocketStore.js';
 
 export const BrowserTerminal = () => {
 
     const terminalRef = useRef(null);
-    const socket = useRef(null);
+    // const socket = useRef(null);
+    // const {projectId: projectIdFromUrl } = useParams();
 
-    const {projectId : projectIdFromUrl} = useParams
+    const { terminalSocket } = useTerminalSocketStore();
+    
 
     useEffect(() => {
         const term = new Terminal({
             cursorBlink: true,
-            fontFamily: 'monospace',
-            fontSize: 14,
             theme: {
-                background: '#000000',
-                foreground: '#ffffff',
-                cursor: '#ffffff',
-                cursorAccent: '#000000',
-                red: '#ff0000',
-                green: '#00ff00',
-                yellow: '#ffff00',
-                blue: '#0000ff',
+                background: "black",
+                foreground: "#f8f8f3",
+                cursor: "#f8f8f3",
+                cursorAccent: "#282a37",
+                red: "#ff5544",
+                green: "#50fa7c",
+                yellow: "#f1fa8c",
+                cyan: "#8be9fd",
             },
-            convertEol: true,
+            fontSize: 18,
+            fontFamily: "courier",
+            convertEol: true, // convert CRLF to LF
         });
 
         term.open(terminalRef.current);
@@ -35,51 +37,31 @@ export const BrowserTerminal = () => {
         term.loadAddon(fitAddon);
         fitAddon.fit();
 
-        socket.current = io(`${import.meta.env.VITE_BACKEND_URL}/terminal`, {
-            query: {
-                projectId: projectIdFromUrl,
-            },
-        });
-    
-        socket.current.on('connect', () => {
-            console.log('Connected to terminal socket');
-        });
-    
-        socket.current.on('shell-output', (data) => {
-            term.write(data);
-        });
+        if(terminalSocket) {
+            terminalSocket.onopen = () => {
+                const attachAddon = new AttachAddon(terminalSocket);
+                term.loadAddon(attachAddon);
+                // socket.current = ws;
+            }
+        }
 
-        term.onData((data) => {
-            socket.current.emit('shell-input', data);
-            console.log(data);
-        });
 
         return () => {
             term.dispose();
-            socket.current.disconnect();
+            terminalSocket?.close();
         }
-
-},[]);
-
-
+    }, [terminalSocket])
 
     return (
         <div
             ref={terminalRef}
             style={{
-                width: '100%',
-                height: '75px',
-                backgroundColor: '#000000',
-                color: '#ffffff',
-                fontFamily: 'monospace',
-                fontSize: '14px',
-                padding: '10px',
+                width: "100vw",
             }}
             className='terminal'
-            id='terminal-container'
+            id="terminal-container"
         >
-            Terminal
-        </div>
-    ) 
 
+        </div>
+    )
 }

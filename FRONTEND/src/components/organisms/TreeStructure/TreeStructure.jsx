@@ -1,4 +1,4 @@
-import { useTreeStructureStorage } from "../../../store/treeStructureStorage"
+import { useTreeStructureStore } from "../../../store/treeStructureStore"
 import { useEffect } from "react";
 import { TreeNode } from "../../molecules/Tree/TreeNode";
 import { useFileContextMenuStore } from "../../../store/fileContextMenuStore";
@@ -6,7 +6,7 @@ import { FileContextMenu } from "../../molecules/ContextMenu/FileContextMenu";
 
 export const TreeStructure = () => {
 
-    const {treeStructure, setTreeStructure } = useTreeStructureStorage();
+    const {treeStructure, setTreeStructure } = useTreeStructureStore();
     const { 
         file,
         isOpen: isFileContextOpen, 

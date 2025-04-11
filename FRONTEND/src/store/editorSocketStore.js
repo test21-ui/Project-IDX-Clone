@@ -1,45 +1,40 @@
 import { create } from "zustand";
 import { useActiveFileTabStore } from "./activeFileTabStore";
-import { useTreeStructureStorage } from "./treeStructureStorage";
+import { useTreeStructureStore } from "./treeStructureStore";
+import { usePortStore } from "./portStore";
 
 export const useEditorSocketStore = create((set) => ({
     editorSocket: null,
-
     setEditorSocket: (incomingSocket) => {
+
         const activeFileTabSetter = useActiveFileTabStore.getState().setActiveFileTab;
-        const projectTreeStructureSetter = useTreeStructureStorage.getState().setTreeStructure;
+        const projectTreeStructureSetter = useTreeStructureStore.getState().setTreeStructure;
+        const portSetter = usePortStore.getState().setPort;
 
-        const socketEventHandlers = {
-            readFileSuccess: (data) => {
-                console.log("Read file success", data);
-                const fileExtension = data.path.split('.').pop();
-                activeFileTabSetter(data.path, data.value, fileExtension);
-            },
-
-            writeFileSuccess: (data) => {
-                console.log("Write file success", data);
-                incomingSocket.emit("readFile", {
-                    pathToFileOrFolder: data.path,
-                });
-            },
-
-            deleteFileSuccess: (data) => {
-                console.log("Delete file success", data);
-                projectTreeStructureSetter(data.updatedTree); // ✅ Refresh tree after deletion
-            },
-
-            renameFileSuccess: (data) => {
-                console.log("Rename file success", data);
-                // You can also update open tab name if needed here
-                projectTreeStructureSetter(data.updatedTree);
-            },
-        };
-
-        // Register all handlers
-        Object.entries(socketEventHandlers).forEach(([event, handler]) => {
-            incomingSocket?.on(event, handler);
+        incomingSocket?.on("readFileSuccess", (data) => {
+            console.log("Read file success", data);
+            const fileExtension = data.path.split('.').pop();
+            activeFileTabSetter(data.path, data.value, fileExtension);
         });
 
-        set({ editorSocket: incomingSocket });
-    },
+        incomingSocket?.on("writeFileSuccess", (data) => {
+            console.log("Write file success", data);
+            // incomingSocket.emit("readFile", {
+            //     pathToFileOrFolder: data.path
+            // })
+        });
+
+        incomingSocket?.on("deleteFileSuccess", () => {
+            projectTreeStructureSetter();
+        });
+
+        incomingSocket?.on("getPortSuccess", ({ port }) => {
+            console.log("port data", port);
+            portSetter(port);
+        })
+
+        set({
+            editorSocket: incomingSocket
+        });
+    }
 }));
